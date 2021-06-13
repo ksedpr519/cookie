@@ -8,6 +8,17 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- 스프링 설정파일  -->
+	<!-- 스프링 실행 절차
+		1. 스프링이 사용할 메모리 영역을 할당. 할당된 메모리를 Context라 함. 
+		2. 스프링에서 ApplicationContext라는 이름의 객체가 만들어 짐.
+		3. 스프링 자신이 객체를 생성하고 관리해야 하는 객체들에 대한 설정이 필요. => root-context.xml
+		4. root-context.xml의 <context:component-scan>을 통해 base-package의 경로를 스캔
+		5. @Component 어노테이션이 존재하는 클래스의 인스턴스를 생성.
+		6. @Autowired 설정이 있다면 스프링이 객체의 레퍼런스를 필요한 객체에 주입. (레스토랑 객체에 쉐프 객체를 주입함.) 
+		
+	 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<!-- <property name="driverClassName"
 			value="oracle.jdbc.driver.OracleDriver"></property>
@@ -23,15 +34,17 @@
 	
 	<!-- HikariCP configuration -->
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-		<constructor-arg ref="hikariConfig"></constructor-arg>
+		<constructor-arg ref="hikariConfig"></constructor-arg> <!--  -->
 	</bean>
 	
+	<!-- SQLSession을 생성하여 커넥션을 생성하거나 SQL을 전달하고 결과를 리번받는 구조로 작성 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	
  	<mybatis-spring:scan base-package="org.zerock.mapper"/>
 	 
+	 <!-- org.zerock.sample 패키지를 스캔 -->
 	<context:component-scan base-package="org.zerock.sample">
 	</context:component-scan>
 </beans>
